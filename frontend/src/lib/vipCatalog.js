@@ -78,7 +78,7 @@ export const VIP_PLACES = [
 ];
 
 export const PRICE_KEYS = [
-  { k: "hour", tr: { ru: "За час", en: "Per hour", es: "Por hora", fr: "Par heure", de: "Pro Stunde", pt: "Por hora", zh: "每小时", hi: "प्रति घंटा", bn: "প্রতি ঘণ্টা", ur: "فی گھنٹہ", ar: "للساعة" } },
+  { k: "hour", tr: { ru: "За 1 час", en: "1 hour", es: "1 hora", fr: "1 heure", de: "1 Stunde", pt: "1 hora", zh: "1小时", hi: "1 घंटा", bn: "১ ঘণ্টা", ur: "1 گھنٹہ", ar: "ساعة واحدة" } },
   { k: "h2", tr: { ru: "За 2 часа", en: "2 hours", es: "2 horas", fr: "2 heures", de: "2 Stunden", pt: "2 horas", zh: "2小时", hi: "2 घंटे", bn: "২ ঘণ্টা", ur: "2 گھنٹے", ar: "ساعتان" } },
   { k: "h3", tr: { ru: "За 3 часа", en: "3 hours", es: "3 horas", fr: "3 heures", de: "3 Stunden", pt: "3 horas", zh: "3小时", hi: "3 घंटे", bn: "৩ ঘণ্টা", ur: "3 گھنٹے", ar: "3 ساعات" } },
 ];
