@@ -399,22 +399,6 @@ export default function VipEditor() {
             <ArrowRight size={14} />
           </Button>
         </div>
-        <div className="flex flex-wrap items-end gap-2 mb-2">
-          <Input data-testid="vip-slot-date" type="date" value={ns.date} onChange={(e) => setNs({ ...ns, date: e.target.value })} className="bg-white/5 border-white/10 w-40" />
-          <Input data-testid="vip-slot-from" type="time" value={ns.from} onChange={(e) => setNs({ ...ns, from: e.target.value })} className="bg-white/5 border-white/10 w-28" />
-          <span className="text-slate-500">–</span>
-          <Input data-testid="vip-slot-to" type="time" value={ns.to} onChange={(e) => setNs({ ...ns, to: e.target.value })} className="bg-white/5 border-white/10 w-28" />
-          <Button data-testid="vip-slot-add" onClick={addSlot} variant="outline" className="bg-white/5 border-white/15"><Plus size={15} /></Button>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {slots.map((s, i) => (
-            <span key={i} data-testid={`vip-slot-${i}`} className="text-xs bg-white/5 gold-hairline rounded-lg px-2.5 py-1 flex items-center gap-2 text-slate-200">
-              {s.date} · {s.from}–{s.to}
-              <button onClick={() => setSlots(slots.filter((_, j) => j !== i))} className="text-rose-300"><X size={12} /></button>
-            </span>
-          ))}
-          {slots.length === 0 && <span className="text-xs text-slate-500">{t("vip_no_slots", lang)}</span>}
-        </div>
       </div>
 
       <div>
