@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Crown, Plus, X, Sparkles, Lock, MapPin, Loader2 } from "lucide-react";
+import { Crown, Plus, X, Sparkles, Lock, MapPin, Loader2, CalendarClock, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { api, fileUrl } from "../lib/api";
@@ -385,7 +385,20 @@ export default function VipEditor() {
       </div>
 
       <div>
-        <div className="text-sm font-semibold text-amber-200 mb-2">{t("vip_calendar", lang)}</div>
+        <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
+          <div className="text-sm font-semibold text-amber-200">{t("vip_calendar", lang)}</div>
+          <Button
+            data-testid="vip-open-bookings"
+            type="button"
+            onClick={() => nav("/vip-bookings")}
+            size="sm"
+            className="bg-rose-500 hover:bg-rose-600 text-white h-8 px-3 gap-1.5"
+          >
+            <CalendarClock size={15} />
+            {t("vip_manage_bookings", lang)}
+            <ArrowRight size={14} />
+          </Button>
+        </div>
         <div className="flex flex-wrap items-end gap-2 mb-2">
           <Input data-testid="vip-slot-date" type="date" value={ns.date} onChange={(e) => setNs({ ...ns, date: e.target.value })} className="bg-white/5 border-white/10 w-40" />
           <Input data-testid="vip-slot-from" type="time" value={ns.from} onChange={(e) => setNs({ ...ns, from: e.target.value })} className="bg-white/5 border-white/10 w-28" />
