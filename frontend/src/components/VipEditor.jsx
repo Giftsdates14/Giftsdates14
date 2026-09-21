@@ -121,7 +121,7 @@ export default function VipEditor() {
   const addPhoto = async (e, isPrivate = false) => {
     const f = e.target.files?.[0]; if (!f) return;
     const list = isPrivate ? privatePhotos : photos;
-    if (list.length >= 12) { toast.error(t("vip_max_photos", lang)); return; }
+    if (list.length >= 8) { toast.error(t("vip_max_photos", lang)); return; }
     const fd = new FormData(); fd.append("photo", f);
     try {
       const { data } = await api.post(`/vip/photo?private=${isPrivate}`, fd);
@@ -303,7 +303,7 @@ export default function VipEditor() {
               <button data-testid="vip-photo-del" onClick={() => delPhoto(p, false)} className="absolute top-0 right-0 bg-black/70 text-rose-300 p-0.5"><X size={12} /></button>
             </div>
           ))}
-          {photos.length < 12 && (
+          {photos.length < 8 && (
             <>
               <input ref={photoRef} data-testid="vip-photo-input" type="file" accept="image/*" onChange={(e) => addPhoto(e, false)} className="hidden" id="vip-photo" />
               <label htmlFor="vip-photo" className="w-20 h-20 rounded-lg border-2 border-dashed border-amber-400/50 flex items-center justify-center text-amber-300 cursor-pointer hover:bg-white/5"><Plus size={20} /></label>
@@ -322,7 +322,7 @@ export default function VipEditor() {
               <button data-testid="vip-private-photo-del" onClick={() => delPhoto(p, true)} className="absolute top-0 right-0 bg-black/70 text-rose-300 p-0.5"><X size={12} /></button>
             </div>
           ))}
-          {privatePhotos.length < 12 && (
+          {privatePhotos.length < 8 && (
             <>
               <input ref={privateRef} data-testid="vip-private-photo-input" type="file" accept="image/*" onChange={(e) => addPhoto(e, true)} className="hidden" id="vip-private-photo" />
               <label htmlFor="vip-private-photo" className="w-20 h-20 rounded-lg border-2 border-dashed border-rose-400/50 flex items-center justify-center text-rose-300 cursor-pointer hover:bg-white/5"><Plus size={20} /></label>

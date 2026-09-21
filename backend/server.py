@@ -115,7 +115,7 @@ GIFT_COMMISSION = 0.30
 VIDEO_RATE_PER_MIN = 10
 DATE_MIN_COINS = 150
 REFERRAL_BONUS = 100
-MAX_PHOTOS = 12
+MAX_PHOTOS = 8
 PHONE_RE = re.compile(r"(?:\+?\d[\s\-\.\(\)_]*){7,}")
 PHONE_WORDS_RE = re.compile(r"\b(whatsapp|telegram|viber|wechat|signal|тел[её]фон|ватсап|телеграм)\b", re.I)
 MAX_VIOLATIONS = 3
@@ -2994,7 +2994,7 @@ async def vip_add_photo(photo: UploadFile = File(...), private: bool = False, us
     u = await db.users.find_one({"id": user["id"]}, {"_id": 0, "vip": 1})
     vip = u.get("vip") or {}
     photos = vip.get(field) or []
-    if len(photos) >= 12:
+    if len(photos) >= 8:
         raise HTTPException(400, "MAX_PHOTOS")
     data = await photo.read()
     if len(data) > 15 * 1024 * 1024:
