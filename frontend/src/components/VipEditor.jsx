@@ -25,7 +25,7 @@ const HAIR_COLORS = ["Black", "Dark brown", "Brown", "Light brown", "Blonde", "P
 const INTIMATE_HAIRCUTS = ["Fully shaved", "Trimmed", "Landing strip", "Bikini line", "Natural / full", "Triangle"];
 const BREAST_SIZES = ["AA", "A", "B", "C", "D", "DD", "E", "F", "G", "H+", "Natural", "Enhanced"];
 const DICK_SIZES = ["< 12 cm", "12–14 cm", "15–17 cm", "18–20 cm", "21–23 cm", "24+ cm"];
-const DICK_GIRTHS = ["Slim", "Average", "Thick", "Very thick", "< 10 cm", "10–12 cm", "13–15 cm", "16+ cm"];
+const DICK_GIRTHS = ["Slim", "Average", "Thick", "Very thick"];
 
 const NONE_VAL = "__none";
 const CUSTOM_VAL = "__custom";
@@ -285,7 +285,21 @@ export default function VipEditor() {
               <AttrSelect testid="vip-sep-hair" label={t("vip_hair_color", lang)} value={sepHair} onChange={setSepHair} options={HAIR_COLORS} lang={lang} />
               <AttrSelect testid="vip-sep-haircut" label={t("vip_intimate_haircut", lang)} value={sepHaircut} onChange={setSepHaircut} options={INTIMATE_HAIRCUTS} lang={lang} />
               {showBreast && <AttrSelect testid="vip-sep-breast" label={t("vip_breast_size", lang)} value={sepBreast} onChange={setSepBreast} options={BREAST_SIZES} lang={lang} />}
-              {showDick && <AttrSelect testid="vip-sep-dick" label={t("vip_dick_size", lang)} value={sepDick} onChange={setSepDick} options={DICK_SIZES} lang={lang} customPh={t("vip_dick_custom_ph", lang)} />}
+              {showDick && (
+                <div>
+                  <label className="text-xs text-slate-400">{t("vip_dick_size", lang)}</label>
+                  <Input
+                    data-testid="vip-sep-dick"
+                    type="number"
+                    min="1"
+                    max="60"
+                    value={(sepDick || "").trim()}
+                    onChange={(e) => setSepDick(e.target.value)}
+                    placeholder={t("vip_dick_custom_ph", lang)}
+                    className="bg-white/5 border-white/10 mt-1"
+                  />
+                </div>
+              )}
               {showDick && <AttrSelect testid="vip-sep-dick-girth" label={t("vip_dick_girth", lang)} value={sepDickGirth} onChange={setSepDickGirth} options={DICK_GIRTHS} lang={lang} />}
             </div>
           </div>
