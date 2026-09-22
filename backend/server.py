@@ -2994,7 +2994,8 @@ async def vip_add_photo(photo: UploadFile = File(...), private: bool = False, us
     u = await db.users.find_one({"id": user["id"]}, {"_id": 0, "vip": 1})
     vip = u.get("vip") or {}
     photos = vip.get(field) or []
-    if len(photos) >= 8:
+    limit = 14 if private else 8
+    if len(photos) >= limit:
         raise HTTPException(400, "MAX_PHOTOS")
     data = await photo.read()
     if len(data) > 15 * 1024 * 1024:

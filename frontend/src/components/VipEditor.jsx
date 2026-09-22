@@ -119,16 +119,24 @@ export default function VipEditor() {
     }
   };
   const addPhoto = async (e, isPrivate = false) => {
-    const f = e.target.files?.[0]; if (!f) return;
+    const files = Array.from(e.target.files || []); if (!files.length) return;
     const list = isPrivate ? privatePhotos : photos;
-    if (list.length >= 8) { toast.error(t("vip_max_photos", lang)); return; }
-    const fd = new FormData(); fd.append("photo", f);
+    const limit = isPrivate ? 14 : 8;
+    const room = limit - list.length;
+    const ref = isPrivate ? privateRef : photoRef;
+    if (room <= 0) { toast.error(t("vip_max_photos", lang)); if (ref.current) ref.current.value = ""; return; }
+    const toUpload = files.slice(0, room);
+    if (files.length > room) toast.error(t("vip_max_photos", lang));
     try {
-      const { data } = await api.post(`/vip/photo?private=${isPrivate}`, fd);
-      setPhotos(data.photos); setPrivatePhotos(data.private_photos);
+      let data;
+      for (const f of toUpload) {
+        const fd = new FormData(); fd.append("photo", f);
+        ({ data } = await api.post(`/vip/photo?private=${isPrivate}`, fd));
+      }
+      if (data) { setPhotos(data.photos); setPrivatePhotos(data.private_photos); }
     }
     catch (er) { toast.error(er.response?.data?.detail === "MAX_PHOTOS" ? t("vip_max_photos", lang) : "Ошибка"); }
-    finally { const ref = isPrivate ? privateRef : photoRef; if (ref.current) ref.current.value = ""; }
+    finally { if (ref.current) ref.current.value = ""; }
   };
   const delPhoto = async (p, isPrivate = false) => {
     try { const { data } = await api.delete(`/vip/photo?path=${encodeURIComponent(p)}&private=${isPrivate}`); setPhotos(data.photos); setPrivatePhotos(data.private_photos); } catch { toast.error("Ошибка"); }
@@ -292,26 +300,6 @@ export default function VipEditor() {
       )}
 
 
-      <div data-testid="vip-photos">
-        <div className="text-sm font-semibold text-amber-200 mb-2">{t("vip_public_photos", lang)}</div>
-        <div className="flex flex-wrap gap-2">
-          {photos.map((p, i) => (
-            <div key={p} className="relative w-20 h-20 rounded-lg overflow-hidden gold-hairline group">
-              <img src={fileUrl(p)} alt="" className="w-full h-full object-cover" />
-              {i === 0 && <span className="absolute bottom-0 left-0 right-0 bg-amber-500/80 text-[9px] text-black text-center">{t("vip_cover", lang)}</span>}
-              {i !== 0 && <button data-testid="vip-photo-cover" onClick={() => makeCover(p)} className="absolute bottom-0 left-0 right-0 bg-black/70 text-[9px] text-amber-200 text-center opacity-0 group-hover:opacity-100">{t("vip_make_cover", lang)}</button>}
-              <button data-testid="vip-photo-del" onClick={() => delPhoto(p, false)} className="absolute top-0 right-0 bg-black/70 text-rose-300 p-0.5"><X size={12} /></button>
-            </div>
-          ))}
-          {photos.length < 8 && (
-            <>
-              <input ref={photoRef} data-testid="vip-photo-input" type="file" accept="image/*" onChange={(e) => addPhoto(e, false)} className="hidden" id="vip-photo" />
-              <label htmlFor="vip-photo" className="w-20 h-20 rounded-lg border-2 border-dashed border-amber-400/50 flex items-center justify-center text-amber-300 cursor-pointer hover:bg-white/5"><Plus size={20} /></label>
-            </>
-          )}
-        </div>
-      </div>
-
       <div data-testid="vip-private-photos">
         <div className="text-sm font-semibold text-rose-200 mb-1 flex items-center gap-1.5"><Lock size={14} className="text-rose-300" /> {t("vip_private_photos", lang)}</div>
         <p className="text-[11px] text-slate-500 mb-2">{t("vip_private_photos_note", lang)}</p>
@@ -322,9 +310,9 @@ export default function VipEditor() {
               <button data-testid="vip-private-photo-del" onClick={() => delPhoto(p, true)} className="absolute top-0 right-0 bg-black/70 text-rose-300 p-0.5"><X size={12} /></button>
             </div>
           ))}
-          {privatePhotos.length < 8 && (
+          {privatePhotos.length < 14 && (
             <>
-              <input ref={privateRef} data-testid="vip-private-photo-input" type="file" accept="image/*" onChange={(e) => addPhoto(e, true)} className="hidden" id="vip-private-photo" />
+              <input ref={privateRef} data-testid="vip-private-photo-input" type="file" accept="image/*" multiple onChange={(e) => addPhoto(e, true)} className="hidden" id="vip-private-photo" />
               <label htmlFor="vip-private-photo" className="w-20 h-20 rounded-lg border-2 border-dashed border-rose-400/50 flex items-center justify-center text-rose-300 cursor-pointer hover:bg-white/5"><Plus size={20} /></label>
             </>
           )}
