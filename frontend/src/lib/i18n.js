@@ -290,6 +290,7 @@ const T = {
   vip_dick_girth: { ru: "🍆 girth", en: "🍆 girth" },
   vip_attr_custom: { ru: "Своё (текст)…", en: "Custom (type)…" },
   vip_attr_custom_ph: { ru: "Напишите свой вариант", en: "Type your own" },
+  vip_dick_custom_ph: { ru: "Свой размер, напр. 19 см", en: "Custom size, e.g. 19 cm" },
   not_specified_short: { ru: "Не указано", en: "Not specified" },
   languages_spoken: { ru: "Владею языками", en: "Languages spoken", es: "Idiomas", fr: "Langues parlées", de: "Sprachen", pt: "Idiomas", zh: "会说的语言", ar: "اللغات", hi: "बोली जाने वाली भाषाएँ", bn: "জানা ভাষা", ur: "زبانیں" },
   job_title: { ru: "Профессия", en: "Job title", es: "Profesión", fr: "Profession", de: "Beruf", pt: "Profissão", zh: "职业", ar: "المهنة", hi: "पेशा", bn: "পেশা", ur: "پیشہ" },

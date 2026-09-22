@@ -31,7 +31,7 @@ const NONE_VAL = "__none";
 const CUSTOM_VAL = "__custom";
 
 // A dropdown with all preset options plus a "Custom (type)…" entry that reveals a free-text input.
-function AttrSelect({ label, value, onChange, options, lang, testid }) {
+function AttrSelect({ label, value, onChange, options, lang, testid, customPh }) {
   const isPreset = value && options.includes(value);
   const isCustom = !!value && !isPreset;
   const selectVal = isPreset ? value : (isCustom ? CUSTOM_VAL : NONE_VAL);
@@ -59,7 +59,7 @@ function AttrSelect({ label, value, onChange, options, lang, testid }) {
           value={value.trim() === "" ? "" : value}
           maxLength={60}
           onChange={(e) => onChange(e.target.value || " ")}
-          placeholder={t("vip_attr_custom_ph", lang)}
+          placeholder={customPh || t("vip_attr_custom_ph", lang)}
           className="bg-white/5 border-white/10 mt-2"
         />
       )}
@@ -285,7 +285,7 @@ export default function VipEditor() {
               <AttrSelect testid="vip-sep-hair" label={t("vip_hair_color", lang)} value={sepHair} onChange={setSepHair} options={HAIR_COLORS} lang={lang} />
               <AttrSelect testid="vip-sep-haircut" label={t("vip_intimate_haircut", lang)} value={sepHaircut} onChange={setSepHaircut} options={INTIMATE_HAIRCUTS} lang={lang} />
               {showBreast && <AttrSelect testid="vip-sep-breast" label={t("vip_breast_size", lang)} value={sepBreast} onChange={setSepBreast} options={BREAST_SIZES} lang={lang} />}
-              {showDick && <AttrSelect testid="vip-sep-dick" label={t("vip_dick_size", lang)} value={sepDick} onChange={setSepDick} options={DICK_SIZES} lang={lang} />}
+              {showDick && <AttrSelect testid="vip-sep-dick" label={t("vip_dick_size", lang)} value={sepDick} onChange={setSepDick} options={DICK_SIZES} lang={lang} customPh={t("vip_dick_custom_ph", lang)} />}
               {showDick && <AttrSelect testid="vip-sep-dick-girth" label={t("vip_dick_girth", lang)} value={sepDickGirth} onChange={setSepDickGirth} options={DICK_GIRTHS} lang={lang} />}
             </div>
           </div>
