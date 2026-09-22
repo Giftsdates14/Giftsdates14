@@ -179,14 +179,14 @@ export default function VipEditor() {
         age: Number(sepAge) || null, city: sepCity, country: sepCountry,
         gender: inhGenders[0] || "", genders: inhGenders,
         bio: sep ? (mp.bio || "") : sepBio,
-        height: sep ? (Number(mp.height) || null) : (Number(sepHeight) || null),
-        weight: sep ? (Number(mp.weight) || null) : (Number(sepWeight) || null),
-        eye_color: sep ? "" : (sepEye || "").trim(),
-        hair_color: sep ? "" : (sepHair || "").trim(),
-        intimate_haircut: sep ? "" : (sepHaircut || "").trim(),
-        breast_size: sep ? (mp.bust_size || "") : (showBreast ? (sepBreast || "").trim() : ""),
-        dick_size: sep ? (mp.penis_size || "") : (showDick ? (sepDick || "").trim() : ""),
-        dick_girth: sep ? "" : (showDick ? (sepDickGirth || "").trim() : ""),
+        height: Number(sepHeight) || null,
+        weight: Number(sepWeight) || null,
+        eye_color: (sepEye || "").trim(),
+        hair_color: (sepHair || "").trim(),
+        intimate_haircut: (sepHaircut || "").trim(),
+        breast_size: (sepBreast || "").trim(),
+        dick_size: (sepDick || "").trim(),
+        dick_girth: (sepDickGirth || "").trim(),
         show_on_main: showOnMain,
       };
       await api.put("/vip/profile", payload);
@@ -273,6 +273,31 @@ export default function VipEditor() {
           </div>
         </div>
       )}
+
+
+      <div className="rounded-xl border border-rose-500/20 bg-white/5 p-4 space-y-3" data-testid="vip-appearance">
+        <div className="text-sm font-semibold text-rose-200 flex items-center gap-1.5"><Lock size={14} className="text-rose-300" /> {t("vip_appearance", lang)}</div>
+        <p className="text-[11px] text-slate-500">{t("vip_private_photos_note", lang)}</p>
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label className="text-xs text-slate-400">{t("height", lang)}</label>
+            <Input data-testid="vip-height" type="number" min="100" max="250" value={sepHeight} onChange={(e) => setSepHeight(e.target.value)} className="bg-white/5 border-white/10 mt-1 font-mono-num" />
+          </div>
+          <div>
+            <label className="text-xs text-slate-400">{t("weight", lang)}</label>
+            <Input data-testid="vip-weight" type="number" min="30" max="400" value={sepWeight} onChange={(e) => setSepWeight(e.target.value)} className="bg-white/5 border-white/10 mt-1 font-mono-num" />
+          </div>
+          <AttrSelect testid="vip-eye" label={t("vip_eye_color", lang)} value={sepEye} onChange={setSepEye} options={EYE_COLORS} lang={lang} />
+          <AttrSelect testid="vip-hair" label={t("vip_hair_color", lang)} value={sepHair} onChange={setSepHair} options={HAIR_COLORS} lang={lang} />
+          <AttrSelect testid="vip-haircut" label={t("vip_intimate_haircut", lang)} value={sepHaircut} onChange={setSepHaircut} options={INTIMATE_HAIRCUTS} lang={lang} />
+          <AttrSelect testid="vip-breast" label={t("vip_breast_size", lang)} value={sepBreast} onChange={setSepBreast} options={BREAST_SIZES} lang={lang} />
+          <div>
+            <label className="text-xs text-slate-400">{t("vip_dick_size", lang)}</label>
+            <Input data-testid="vip-dick" type="number" min="1" max="60" value={(sepDick || "").trim()} onChange={(e) => setSepDick(e.target.value)} placeholder={t("vip_dick_custom_ph", lang)} className="bg-white/5 border-white/10 mt-1" />
+          </div>
+          <AttrSelect testid="vip-dick-girth" label={t("vip_dick_girth", lang)} value={sepDickGirth} onChange={setSepDickGirth} options={DICK_GIRTHS} lang={lang} />
+        </div>
+      </div>
 
 
       <div data-testid="vip-private-photos">
