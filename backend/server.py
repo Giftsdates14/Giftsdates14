@@ -465,6 +465,7 @@ class RegisterReq(BaseModel):
     genders: Optional[List[str]] = None
     interested_in: str
     orientation: Optional[str] = "straight"
+    orientations: Optional[List[str]] = None
     city: str
     country: str
     bio: Optional[str] = ""
@@ -876,7 +877,7 @@ async def register(req: RegisterReq):
         "id": uid, "email": req.email.lower(), "password": hash_pwd(req.password),
         "name": req.name, "age": age, "gender": (_genders[0] if _genders else req.gender), "genders": _genders,
         "birth_date": birth_date, "zodiac": zodiac,
-        "interested_in": req.interested_in, "orientation": req.orientation or "straight", "city": req.city, "country": req.country,
+        "interested_in": req.interested_in, "orientation": ((req.orientations or [None])[0] or req.orientation or "straight"), "orientations": (req.orientations or ([req.orientation] if req.orientation else [])), "city": req.city, "country": req.country,
         "lat": req.lat, "lng": req.lng,
         "bio": req.bio or "", "interests": [], "photos": [], "language": req.language or "en",
         "phone": (req.phone or "").strip() or None,

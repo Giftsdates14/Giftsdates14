@@ -51,7 +51,7 @@ export default function Auth() {
   const nav = useNavigate();
   const [sp] = useSearchParams();
   const [mode, setMode] = useState(sp.get("register") ? "register" : "login");
-  const [f, setF] = useState({ email: "", password: "", name: "", age: 25, gender: "female", genders: ["female"], interested_in: "male", orientation: "straight", city: "", country: "", bio: "", phone: "", referral_code: sp.get("ref") || "", language: lang, birth_day: "", birth_month: "", birth_year: "", lat: null, lng: null });
+  const [f, setF] = useState({ email: "", password: "", name: "", age: 25, gender: "female", genders: ["female"], interested_in: "male", orientation: "straight", orientations: ["straight"], city: "", country: "", bio: "", phone: "", referral_code: sp.get("ref") || "", language: lang, birth_day: "", birth_month: "", birth_year: "", lat: null, lng: null });
   const [busy, setBusy] = useState(false);
   const [locating, setLocating] = useState(false);
   const [agreed, setAgreed] = useState(false);
@@ -99,7 +99,10 @@ export default function Auth() {
         const st = localStorage.getItem("gd_spin_token");
         const payload = {
           ...f,
-          gender: (f.genders && f.genders.length ? f.genders[0] : f.gender),
+          gender: f.gender,
+          genders: f.gender ? [f.gender] : [],
+          orientation: (f.orientations && f.orientations.length ? f.orientations[0] : f.orientation),
+          orientations: f.orientations || (f.orientation ? [f.orientation] : []),
           birth_day: f.birth_day ? parseInt(f.birth_day) : undefined,
           birth_month: f.birth_month ? parseInt(f.birth_month) : undefined,
           birth_year: f.birth_year ? parseInt(f.birth_year) : undefined,
@@ -190,18 +193,10 @@ export default function Auth() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="text-xs text-slate-400">{t("gender", lang)}</Label>
-                  <div className="mt-1">
-                    <MultiSelect
-                      testid="auth-gender-select"
-                      accent="rose"
-                      value={f.genders || []}
-                      onChange={(gs) => setF({ ...f, genders: gs, gender: gs[0] || "" })}
-                      options={GENDERS.map(g => ({ value: g, label: t(g, lang) }))}
-                      placeholder={t("gender", lang)}
-                      searchPlaceholder={t("search", lang)}
-                      emptyText={t("no_results", lang)}
-                    />
-                  </div>
+                  <Select value={f.gender} onValueChange={v => setF({ ...f, gender: v, genders: [v] })}>
+                    <SelectTrigger data-testid="auth-gender-select" className="bg-white/5 border-white/10 mt-1"><SelectValue /></SelectTrigger>
+                    <SelectContent className="bg-[#161320] border-white/10 max-h-72">{GENDERS.map(g => <SelectItem key={g} value={g}>{t(g, lang)}</SelectItem>)}</SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label className="text-xs text-slate-400">{t("interested_in", lang)}</Label>
@@ -212,10 +207,18 @@ export default function Auth() {
                 </div>
                 <div>
                   <Label className="text-xs text-slate-400">{t("orientation", lang)}</Label>
-                  <Select value={f.orientation} onValueChange={v => setF({ ...f, orientation: v })}>
-                    <SelectTrigger data-testid="auth-orientation-select" className="bg-white/5 border-white/10 mt-1"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#161320] border-white/10">{ORIENTATIONS.map(o => <SelectItem key={o} value={o}>{optLabel("orientation", o, lang)}</SelectItem>)}</SelectContent>
-                  </Select>
+                  <div className="mt-1">
+                    <MultiSelect
+                      testid="auth-orientation-select"
+                      accent="rose"
+                      value={f.orientations || []}
+                      onChange={(os) => setF({ ...f, orientations: os, orientation: os[0] || "" })}
+                      options={ORIENTATIONS.map(o => ({ value: o, label: optLabel("orientation", o, lang) }))}
+                      placeholder={t("orientation", lang)}
+                      searchPlaceholder={t("search", lang)}
+                      emptyText={t("no_results", lang)}
+                    />
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
