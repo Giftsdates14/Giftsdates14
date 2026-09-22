@@ -166,17 +166,30 @@ export default function VipEditor() {
   const save = async () => {
     setBusy(true);
     try {
-      await api.put("/vip/profile", {
+      // In "separate" mode the user only fills Nickname, Age, Country, City.
+      // Gender, bio and all appearance fields are inherited from the main profile.
+      const sep = postMode === "separate";
+      const mp = user || {};
+      const inhGenders = sep ? (mp.genders && mp.genders.length ? mp.genders : (mp.gender ? [mp.gender] : [])) : sepGenders;
+      const payload = {
         services, services_note: servicesNote, places, client_wants: wants,
         price_hour: Number(prices.hour) || 0, price_2h: Number(prices.h2) || 0, price_3h: Number(prices.h3) || 0,
         availability: slots, published: isVip ? published : false,
         nickname, post_mode: postMode,
-        age: Number(sepAge) || null, city: sepCity, country: sepCountry, gender: sepGenders[0] || "", genders: sepGenders, bio: sepBio,
-        height: Number(sepHeight) || null, weight: Number(sepWeight) || null,
-        eye_color: (sepEye || "").trim(), hair_color: (sepHair || "").trim(), intimate_haircut: (sepHaircut || "").trim(),
-        breast_size: showBreast ? (sepBreast || "").trim() : "", dick_size: showDick ? (sepDick || "").trim() : "", dick_girth: showDick ? (sepDickGirth || "").trim() : "",
+        age: Number(sepAge) || null, city: sepCity, country: sepCountry,
+        gender: inhGenders[0] || "", genders: inhGenders,
+        bio: sep ? (mp.bio || "") : sepBio,
+        height: sep ? (Number(mp.height) || null) : (Number(sepHeight) || null),
+        weight: sep ? (Number(mp.weight) || null) : (Number(sepWeight) || null),
+        eye_color: sep ? "" : (sepEye || "").trim(),
+        hair_color: sep ? "" : (sepHair || "").trim(),
+        intimate_haircut: sep ? "" : (sepHaircut || "").trim(),
+        breast_size: sep ? (mp.bust_size || "") : (showBreast ? (sepBreast || "").trim() : ""),
+        dick_size: sep ? (mp.penis_size || "") : (showDick ? (sepDick || "").trim() : ""),
+        dick_girth: sep ? "" : (showDick ? (sepDickGirth || "").trim() : ""),
         show_on_main: showOnMain,
-      });
+      };
+      await api.put("/vip/profile", payload);
       await refreshUser();
       toast.success(t("vip_saved_toast", lang));
     } catch (e) { toast.error(e.response?.data?.detail || "Ошибка"); } finally { setBusy(false); }
@@ -251,58 +264,6 @@ export default function VipEditor() {
             {locating ? <Loader2 size={15} className="animate-spin" /> : <MapPin size={15} />}
             {locating ? t("detecting_location", lang) : t("detect_location", lang)}
           </button>
-          <div>
-            <label className="text-xs text-slate-400">{t("gender", lang)}</label>
-            <div className="mt-1" data-testid="vip-sep-gender">
-              <MultiSelect
-                testid="vip-sep-gender-select"
-                accent="amber"
-                value={sepGenders}
-                onChange={setSepGenders}
-                options={GENDERS.map((g) => ({ value: g, label: t(g, lang) }))}
-                placeholder={t("gender", lang)}
-                searchPlaceholder={t("search", lang)}
-                emptyText={t("no_results", lang)}
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-xs text-slate-400">{t("vip_separate_bio", lang)}</label>
-            <Textarea data-testid="vip-sep-bio" rows={2} maxLength={1000} value={sepBio} onChange={(e) => setSepBio(e.target.value)} placeholder={t("vip_separate_bio_ph", lang)} className="bg-white/5 border-white/10 mt-1" />
-          </div>
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3" data-testid="vip-sep-appearance">
-            <div className="text-sm font-semibold text-amber-200">{t("vip_appearance", lang)}</div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs text-slate-400">{t("height", lang)}</label>
-                <Input data-testid="vip-sep-height" type="number" min="100" max="250" value={sepHeight} onChange={(e) => setSepHeight(e.target.value)} className="bg-white/5 border-white/10 mt-1 font-mono-num" />
-              </div>
-              <div>
-                <label className="text-xs text-slate-400">{t("weight", lang)}</label>
-                <Input data-testid="vip-sep-weight" type="number" min="30" max="400" value={sepWeight} onChange={(e) => setSepWeight(e.target.value)} className="bg-white/5 border-white/10 mt-1 font-mono-num" />
-              </div>
-              <AttrSelect testid="vip-sep-eye" label={t("vip_eye_color", lang)} value={sepEye} onChange={setSepEye} options={EYE_COLORS} lang={lang} />
-              <AttrSelect testid="vip-sep-hair" label={t("vip_hair_color", lang)} value={sepHair} onChange={setSepHair} options={HAIR_COLORS} lang={lang} />
-              <AttrSelect testid="vip-sep-haircut" label={t("vip_intimate_haircut", lang)} value={sepHaircut} onChange={setSepHaircut} options={INTIMATE_HAIRCUTS} lang={lang} />
-              {showBreast && <AttrSelect testid="vip-sep-breast" label={t("vip_breast_size", lang)} value={sepBreast} onChange={setSepBreast} options={BREAST_SIZES} lang={lang} />}
-              {showDick && (
-                <div>
-                  <label className="text-xs text-slate-400">{t("vip_dick_size", lang)}</label>
-                  <Input
-                    data-testid="vip-sep-dick"
-                    type="number"
-                    min="1"
-                    max="60"
-                    value={(sepDick || "").trim()}
-                    onChange={(e) => setSepDick(e.target.value)}
-                    placeholder={t("vip_dick_custom_ph", lang)}
-                    className="bg-white/5 border-white/10 mt-1"
-                  />
-                </div>
-              )}
-              {showDick && <AttrSelect testid="vip-sep-dick-girth" label={t("vip_dick_girth", lang)} value={sepDickGirth} onChange={setSepDickGirth} options={DICK_GIRTHS} lang={lang} />}
-            </div>
-          </div>
           <div className="flex items-center justify-between gap-3 rounded-xl bg-white/5 border border-white/10 px-3 py-2.5">
             <div>
               <div className="text-sm font-semibold text-amber-100">{t("vip_show_on_main", lang)}</div>
