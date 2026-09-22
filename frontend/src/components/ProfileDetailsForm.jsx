@@ -98,7 +98,7 @@ export default function ProfileDetailsForm({ f, setF, lang, gender }) {
         <h2 className="font-serif-luxe text-2xl">{t("intimate", lang)}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {gender !== "male" && <Field label={t("bust_size", lang)}><Sel testid="profile-bust-select" field="bust_size" value={f.bust_size} options={BUST} onChange={set("bust_size")} lang={lang} /></Field>}
-          {gender !== "female" && <Field label={t("penis_size", lang)}><Sel testid="profile-penis-select" field="penis_size" value={f.penis_size} options={SIZES} onChange={set("penis_size")} lang={lang} /></Field>}
+          {gender !== "female" && <Field label={t("penis_size", lang)}><Input data-testid="profile-penis-select" type="number" min="1" max="60" value={f.penis_size || ""} onChange={(e) => set("penis_size")(e.target.value)} placeholder={t("vip_dick_custom_ph", lang)} className="bg-white/5 border-white/10 mt-1" /></Field>}
         </div>
       </div>
     </>
