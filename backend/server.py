@@ -40,6 +40,11 @@ VALID_GENDERS = (
     "gender_variant", "third_gender", "polygender", "omnigender",
     "transsexual", "questioning", "other_gender", "prefer_not_gender",
 )
+VALID_ORIENTATIONS = (
+    "straight", "gay", "lesbian", "bisexual", "pansexual", "omnisexual",
+    "polysexual", "asexual", "demisexual", "sapiosexual", "aromantic",
+    "transgender", "queer", "fluid", "questioning", "prefer_not",
+)
 storage_key = None
 
 def init_storage(force: bool = False):
@@ -501,6 +506,7 @@ class ProfileUpdate(BaseModel):
     language: Optional[str] = None
     relationship_intent: Optional[List[str]] = None
     orientation: Optional[str] = None
+    orientations: Optional[List[str]] = None
     gender: Optional[str] = None
     genders: Optional[List[str]] = None
     hobbies: Optional[List[str]] = None
@@ -873,11 +879,16 @@ async def register(req: RegisterReq):
     _genders = [g for g in (req.genders or []) if g in VALID_GENDERS]
     if not _genders and req.gender in VALID_GENDERS:
         _genders = [req.gender]
+    _orientations = [o for o in (req.orientations or []) if o in VALID_ORIENTATIONS]
+    if not _orientations and req.orientation in VALID_ORIENTATIONS:
+        _orientations = [req.orientation]
+    if not _orientations:
+        raise HTTPException(400, "ORIENTATION_REQUIRED")
     doc = {
         "id": uid, "email": req.email.lower(), "password": hash_pwd(req.password),
         "name": req.name, "age": age, "gender": (_genders[0] if _genders else req.gender), "genders": _genders,
         "birth_date": birth_date, "zodiac": zodiac,
-        "interested_in": req.interested_in, "orientation": ((req.orientations or [None])[0] or req.orientation or "straight"), "orientations": (req.orientations or ([req.orientation] if req.orientation else [])), "city": req.city, "country": req.country,
+        "interested_in": req.interested_in, "orientation": _orientations[0], "orientations": _orientations, "city": req.city, "country": req.country,
         "lat": req.lat, "lng": req.lng,
         "bio": req.bio or "", "interests": [], "photos": [], "language": req.language or "en",
         "phone": (req.phone or "").strip() or None,
@@ -936,6 +947,14 @@ async def update_me(patch: ProfileUpdate, user=Depends(get_current_user)):
         upd["genders"] = gs
         if gs:
             upd["gender"] = gs[0]
+    if "orientations" in upd:
+        os_ = [o for o in (upd["orientations"] or []) if o in VALID_ORIENTATIONS]
+        upd["orientations"] = os_
+        if os_:
+            upd["orientation"] = os_[0]
+    if "orientation" in upd and upd.get("orientation") and "orientations" not in upd:
+        if upd["orientation"] in VALID_ORIENTATIONS:
+            upd["orientations"] = [upd["orientation"]]
     if "hide_distance" in upd and upd["hide_distance"] and not (is_premium(user) or is_vip(user)):
         raise HTTPException(403, "PREMIUM_REQUIRED")
     if "height" in upd and not (100 <= upd["height"] <= 250): raise HTTPException(400, "Height must be 100-250 cm")

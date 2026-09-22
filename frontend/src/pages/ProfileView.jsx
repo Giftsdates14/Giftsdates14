@@ -101,6 +101,13 @@ export default function ProfileView() {
                   ))}
                 </div>
               )}
+              {(Array.isArray(p.orientations) ? p.orientations : (p.orientation ? [p.orientation] : [])).length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2" data-testid="profile-view-orientations">
+                  {(Array.isArray(p.orientations) ? p.orientations : [p.orientation]).map(ov => (
+                    <span key={ov} className="inline-block px-3 py-1 rounded-full bg-violet-500/20 border border-violet-500/30 text-sm text-violet-200">{optLabel("orientation", ov, lang)}</span>
+                  ))}
+                </div>
+              )}
             </div>
 
             {isSelf && (
@@ -188,7 +195,7 @@ export default function ProfileView() {
             <div className="glass rounded-2xl p-5" data-testid="profile-view-details">
               <h3 className="font-serif-luxe text-xl mb-2">{t("details", lang)}</h3>
               <Row label={t("gender", lang)} value={(p.genders && p.genders.length) ? p.genders.map(g => optLabel("gender", g, lang)).join(", ") : optLabel("gender", p.gender, lang)} testid="pv-gender" />
-              <Row label={t("orientation", lang)} value={optLabel("orientation", p.orientation, lang)} testid="pv-orientation" />
+              <Row label={t("orientation", lang)} value={(Array.isArray(p.orientations) && p.orientations.length) ? p.orientations.map(o => optLabel("orientation", o, lang)).join(", ") : optLabel("orientation", p.orientation, lang)} testid="pv-orientation" />
               <Row label={t("job_title", lang)} value={p.job_title} testid="pv-job" />
               <Row label={t("height", lang)} value={p.height && `${p.height} cm`} testid="pv-height" />
               <Row label={t("weight", lang)} value={p.weight && `${p.weight} kg`} testid="pv-weight" />

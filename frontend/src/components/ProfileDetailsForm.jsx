@@ -2,6 +2,7 @@ import React from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import ChipMultiSelect from "./ChipMultiSelect";
 import { LANGUAGES, t } from "../lib/i18n";
 
 export const INTENTS = ["serious", "marriage", "casual", "just_sex", "friendship", "travel", "sponsor", "giftsdates"];
@@ -63,8 +64,16 @@ export default function ProfileDetailsForm({ f, setF, lang, gender }) {
             })}
           </div>
         </Field>
+        <Field label={`${t("orientation", lang)} (${t("select_multiple", lang)})`}>
+          <ChipMultiSelect
+            testid="profile-orientation-chips"
+            accent="rose"
+            value={Array.isArray(f.orientations) ? f.orientations : (f.orientation ? [f.orientation] : [])}
+            onChange={(os) => setF({ ...f, orientations: os, orientation: os[0] || "" })}
+            options={ORIENTATIONS.map(o => ({ value: o, label: optLabel("orientation", o, lang) }))}
+          />
+        </Field>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label={t("orientation", lang)}><Sel testid="profile-orientation-select" field="orientation" value={f.orientation} options={ORIENTATIONS} onChange={set("orientation")} lang={lang} /></Field>
           <Field label={t("job_title", lang)}><Input data-testid="profile-job-input" value={f.job_title || ""} onChange={e => set("job_title")(e.target.value)} className="bg-white/5 border-white/10 mt-1" /></Field>
           <Field label={t("height", lang)}><Input data-testid="profile-height-input" type="number" min="100" max="250" value={f.height || ""} onChange={e => set("height")(e.target.value ? parseInt(e.target.value) : null)} className="bg-white/5 border-white/10 mt-1" /></Field>
           <Field label={t("weight", lang)}><Input data-testid="profile-weight-input" type="number" min="30" max="300" value={f.weight || ""} onChange={e => set("weight")(e.target.value ? parseInt(e.target.value) : null)} className="bg-white/5 border-white/10 mt-1" /></Field>

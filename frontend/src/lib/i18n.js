@@ -652,6 +652,7 @@ const T = {
   consent_privacy: { ru: "Политику конфиденциальности", en: "Privacy Policy" },
   consent_cookies: { ru: "Уведомление о cookie", en: "Cookie Notice" },
   consent_required: { ru: "Пожалуйста, примите Условия, Правила пользования, Политику конфиденциальности и Уведомление о cookie, чтобы продолжить.", en: "Please agree to the Terms, Terms of Use, Privacy Policy and Cookie Notice to continue." },
+  orientation_required: { ru: "Пожалуйста, выберите хотя бы одну ориентацию.", en: "Please select at least one orientation.", es: "Selecciona al menos una orientación.", fr: "Veuillez sélectionner au moins une orientation.", de: "Bitte wählen Sie mindestens eine Orientierung.", pt: "Selecione pelo menos uma orientação.", zh: "请至少选择一种性取向。", ar: "يرجى اختيار توجه واحد على الأقل.", hi: "कृपया कम से कम एक ओरिएंटेशन चुनें।", bn: "অনুগ্রহ করে অন্তত একটি ওরিয়েন্টেশন নির্বাচন করুন।", ur: "براہ کرم کم از کم ایک رجحان منتخب کریں۔" },
   footer_company: { ru: "Компания", en: "Company" },
   footer_legal: { ru: "Правовая информация", en: "Legal" },
   footer_safety_col: { ru: "Безопасность", en: "Safety" },

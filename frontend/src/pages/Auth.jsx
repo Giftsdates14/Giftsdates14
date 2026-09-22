@@ -14,6 +14,7 @@ import SpinWheel from "../components/SpinWheel";
 import CountrySelect from "../components/CountrySelect";
 import CitySelect from "../components/CitySelect";
 import MultiSelect from "../components/MultiSelect";
+import ChipMultiSelect from "../components/ChipMultiSelect";
 import { Eye, EyeOff, MapPin, Loader2 } from "lucide-react";
 import { detectLocation } from "../lib/geolocate";
 import { normalizeCountry } from "../lib/countries";
@@ -92,6 +93,7 @@ export default function Auth() {
   const submit = async (e) => {
     e.preventDefault();
     if (mode === "register" && !agreed) { toast.error(t("consent_required", lang)); return; }
+    if (mode === "register" && !(f.orientations && f.orientations.length)) { toast.error(t("orientation_required", lang)); return; }
     setBusy(true);
     try {
       if (mode === "login") { await login(f.email, f.password); toast.success(t("welcome_back", lang)); }
@@ -205,20 +207,15 @@ export default function Auth() {
                     <SelectContent className="bg-[#161320] border-white/10">{GENDERS.map(g => <SelectItem key={g} value={g}>{t(g, lang)}</SelectItem>)}<SelectItem value="all">{t("all", lang)}</SelectItem></SelectContent>
                   </Select>
                 </div>
-                <div>
-                  <Label className="text-xs text-slate-400">{t("orientation", lang)}</Label>
-                  <div className="mt-1">
-                    <MultiSelect
-                      testid="auth-orientation-select"
-                      accent="rose"
-                      value={f.orientations || []}
-                      onChange={(os) => setF({ ...f, orientations: os, orientation: os[0] || "" })}
-                      options={ORIENTATIONS.map(o => ({ value: o, label: optLabel("orientation", o, lang) }))}
-                      placeholder={t("orientation", lang)}
-                      searchPlaceholder={t("search", lang)}
-                      emptyText={t("no_results", lang)}
-                    />
-                  </div>
+                <div className="col-span-2">
+                  <Label className="text-xs text-slate-400">{t("orientation", lang)} ({t("select_multiple", lang)})</Label>
+                  <ChipMultiSelect
+                    testid="auth-orientation-select"
+                    accent="rose"
+                    value={f.orientations || []}
+                    onChange={(os) => setF({ ...f, orientations: os, orientation: os[0] || "" })}
+                    options={ORIENTATIONS.map(o => ({ value: o, label: optLabel("orientation", o, lang) }))}
+                  />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
